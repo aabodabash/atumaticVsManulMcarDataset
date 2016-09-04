@@ -23,7 +23,7 @@ levels(mtcars$am) <-c("Automatic", "Manual")
 ```
 
 ####Executive Summary
-We'll explorre *mtcars* dataset to build a regression model which will confirm Manual is better than Automatic transimtions in term of MPG "Miles Per Gallon" ( 2.9 mpg much better), and quntify that differnece.
+We'll explorer *mtcars* dataset to build a regression model which will confirm Manual is better than Automatic transitions in term of MPG "Miles Per Gallon" (avg 2.9 mpg much better ), and quantify that difference.
 
 ####Setting the Scene
 Let's look at the data first, *mtcars* data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models), So  *mtcars* is A data frame with 32 observations on 11 variables  (Fig.1 Scatter plot for all vars)
@@ -38,25 +38,25 @@ Let's look at the data first, *mtcars* data was extracted from the 1974 Motor Tr
 [,11] carb *Number of carburetors* |  . 
 
 
-Frankly speaking, its seems Manual transisission better than Automatice from data plotting "Appendex Fig.1", So lets get the *P-Value* to confirm this "we can call it" assumtion or hypothesis:
+Frankly speaking, its seems Manual transmission better than Automatic from data plotting "Appendix Fig.1", So lets get the *P-Value* to confirm this "we can call it" assumption or hypothesis:
 
 
 ```{r  }
 t.test(mpg~am,mtcars,paired=FALSE,var.equal=FALSE)
 ```
 
-So, P-Value is  0.001374 whichs less than 0.05 which confirm our first assumtion.
+So, P-Value is  0.001374 which s less than 0.05 which confirm our first assumption.
 
 
 ####Regression Model and Qunitifiying the difference
-So the following basic model which multivariate linear reqression with all variables:
+So the following basic model which multivariate linear regression with all variables:
 
 ```{r  }
 summary(lm(mpg~am,mtcars))
  
 ```
 
-Indeed, it looks like wt is the only factor that significantly changes with mpg. However, including all variables will possibly result overfitting, R has an automatic variable-selection function *step*. so lets enhance our model using *step* as following:
+Indeed, it looks like wt is the only factor that significantly changes with mpg. However, including all variables will possibly result over-fitting, R has an automatic variable-selection function *step*. so lets enhance our model using *step* as following:
 
 ```{r  }
 
