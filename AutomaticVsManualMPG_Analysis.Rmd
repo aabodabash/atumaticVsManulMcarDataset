@@ -1,0 +1,96 @@
+---
+title: "Automatic vs Manual Transmission in term of MPG"
+author: "Ameen AboDabash"
+date: "Sep 2, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+##loading requrired packages
+packages<-c("graphics","ggplot2","datasets")
+sapply(packages, require, character.only = TRUE)
+data(mtcars)
+## setting the seed, to insure this analysis will end up with the same results
+set.seed(1988)
+
+# am as factor data
+mtcars$am <- as.factor(mtcars$am)
+
+# [,9]   am  Transmission (0 = automatic, 1 = manual)
+levels(mtcars$am) <-c("Automatic", "Manual")
+
+```
+
+####Executive Summary
+We'll explorre *mtcars* dataset to build a regression model which will confirm Manual is better than Automatic transimtions in term of MPG "Miles Per Gallon" ( 2.9 mpg much better), and quntify that differnece.
+
+####Setting the Scene
+Let's look at the data first, *mtcars* data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models), So  *mtcars* is A data frame with 32 observations on 11 variables  (Fig.1 Scatter plot for all vars)
+
+
+[, 1] mpg *Miles/(US) gallon*       | [, 9] am *Transmission (0=automatic, 1=manual)*
+------------------------------------|----------------------------------
+[, 2] cyl  *Number of cylinders* | [, 3] disp *Displacement (cu.in.)*   
+[, 4] hp *Gross horsepower*      | [, 5] drat *Rear axle ratio* 
+[, 6] wt *Weight (lb/1000)*      | [, 7] qsec *1/4 mile time*
+[, 8] vs *V/S*                   | [,10] gear *Number of forward gears*
+[,11] carb *Number of carburetors* |  . 
+
+
+Frankly speaking, its seems Manual transisission better than Automatice from data plotting "Appendex Fig.1", So lets get the *P-Value* to confirm this "we can call it" assumtion or hypothesis:
+
+
+```{r  }
+t.test(mpg~am,mtcars,paired=FALSE,var.equal=FALSE)
+```
+
+So, P-Value is  0.001374 whichs less than 0.05 which confirm our first assumtion.
+
+
+####Regression Model and Qunitifiying the difference
+So the following basic model which multivariate linear reqression with all variables:
+
+```{r  }
+summary(lm(mpg~am,mtcars))
+ 
+```
+
+Indeed, it looks like wt is the only factor that significantly changes with mpg. However, including all variables will possibly result overfitting, R has an automatic variable-selection function *step*. so lets enhance our model using *step* as following:
+
+```{r  }
+
+summary(step(lm(data = mtcars, mpg ~ .), trace=0))
+ 
+```
+So *wt (weight)* included by step function and *qsec (1/4 mile time)* as long as *am (Transimession Type)* , *wt* negatively changes with *mpg*, and *qsec* and *am* positively changes.
+Every lb/1000 weight increase will cause a decrease of roughly 4 mpg, every increase of 1/4 mile time will cause an increase of 1.2 mpg, and on average, manual transmission is *2.9 mpg better* than automatic transmission.Appendix(Fig.2).
+
+
+####Appendix
+
+######Fig.1
+```{r fig.width=12, fig.height=5 }
+require(graphics)
+pairs(mtcars, main = "mtcars data")
+#coplot(mpg ~ am | as.factor(am), data = mtcars, panel = panel.smooth, rows = 1)
+boxplot(mpg~am, data = mtcars,
+        xlab = "Transmission",
+        ylab = "MPG",
+        main = "MPG in term of MPG")
+
+```
+
+
+######Fig.2
+```{r fig.width=12, fig.height=5 }
+par(mfrow = c(2,2))
+plot(step(lm(data = mtcars, mpg ~ .), trace=0))
+```
+
+
+
+
+
+
+Analysis available on [github]<https://github.com/aabodabash/autoVsManualMPG.git>
